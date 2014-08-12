@@ -42,6 +42,20 @@ class NavigationManager
     }
 
     /**
+     * Allows you to navigate to the uri
+     *
+     * @param string $method
+     * @param string $uri
+     *
+     * @return Crawler $crawler
+     */
+    public function goToUri($method, $uri)
+    {
+        $crawler = $this->client->request($method, $uri);
+        return $crawler;
+    }
+
+    /**
      * Allows you to navigate to product catalog page
      *
      * @param Crawler $crawler
@@ -63,5 +77,17 @@ class NavigationManager
     public function goToManageCategoriesPage(Crawler $crawler)
     {
         return $this->goToLink($crawler, 'Manage Categories');
+    }
+
+    /**
+     * Allows you to navigate to attribute catalog page
+     *
+     * @param Crawler $crawler
+     *
+     * @return Crawler
+     */
+    public function goToAttributeCatalog(Crawler $crawler)
+    {
+        return $this->goToLink($crawler, 'Manage Attributes');
     }
 } 

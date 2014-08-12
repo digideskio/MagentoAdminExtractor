@@ -3,6 +3,7 @@
 require 'vendor/autoload.php';
 
 use Extractor\ProductAttributeExtractor;
+use Extractor\AttributeExtractor;
 use Manager\MagentoAdminConnexionManager;
 use Manager\NavigationManager;
 
@@ -20,6 +21,7 @@ $mainPageCrawler           = $connexionManager->connectToAdminPage();
 $client                    = $connexionManager->getClient();
 $navigationManager         = new NavigationManager($connexionManager->getClient());
 $productAttributeExtractor = new ProductAttributeExtractor($navigationManager);
+$attributeExtractor        = new AttributeExtractor($navigationManager);
 
 $totalTime = microtime(true);
 
@@ -37,6 +39,17 @@ $processProductsTime = microtime(true) - $totalTime;
 printf(PHP_EOL . '%d products extracted in %fs' . PHP_EOL, count($products), $processProductsTime);
 printf('Average time per product : %fs' . PHP_EOL, $processProductsTime / count($products));
 
+$attributes = [];
+$attributeCatalogCrawler = $navigationManager->goToAttributeCatalog($mainPageCrawler);
+$attributeCatalogCrawler->filter('table#attributeGrid_table tbody tr')->each(
+    function ($attributeCrawler, $i) use (&$attributes, $attributeExtractor) {
+        $attributes[] = $attributeExtractor->extract($attributeCrawler, ($i+1));
+    }
+);
+$processAttributesTime = microtime(true) - $totalTime;
+printf(PHP_EOL . '%d attributes extracted in %fs' . PHP_EOL, count($attributes), $processAttributesTime);
+printf('Average time per attribute : %fs' . PHP_EOL, $processAttributesTime / count($attributes));
+
 //$categories = [];
 //$manageCategoriesCrawler = $navigationManager->goToManageCategoriesPage($mainPageCrawler);
 //$manageCategoriesCrawler->filter('div.tree-holder ')->each(
@@ -48,4 +61,4 @@ printf('Average time per product : %fs' . PHP_EOL, $processProductsTime / count(
 //);
 
 
-die(var_dump($products));
+die(var_dump($products, $attributes));
