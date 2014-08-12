@@ -2,53 +2,50 @@
 
 require 'vendor/autoload.php';
 
-use Goutte\Client;
-use Manager\AttributeManager;
+use Extractor\ProductAttributeExtractor;
+use Manager\MagentoAdminConnexionManager;
+use Manager\NavigationManager;
 
-const MAGENTO_ADMIN_URL = 'http://magento.local/index.php/admin';
+const MAGENTO_ADMIN_URL   = 'http://magento.local/index.php/admin';
 const MAGENTO_ADMIN_LOGIN = 'root';
-const MAGENTO_ADMIN_PWD = 'akeneo2014';
+const MAGENTO_ADMIN_PWD   = 'akeneo2014';
 
-$client  = new Client();
-$attributeManager = new AttributeManager();
+$connexionManager = new MagentoAdminConnexionManager(
+    MAGENTO_ADMIN_URL,
+    MAGENTO_ADMIN_LOGIN,
+    MAGENTO_ADMIN_PWD
+);
 
-$crawler = $client->request('GET', MAGENTO_ADMIN_URL);
-$form    = $crawler->selectButton('Login')->form();
-$crawler = $client->submit($form, ['login[username]' => MAGENTO_ADMIN_LOGIN, 'login[password]' => MAGENTO_ADMIN_PWD]);
-$link    = $crawler->selectLink('Manage Products')->link();
-$crawler = $client->click($link);
+$mainPageCrawler           = $connexionManager->connectToAdminPage();
+$client                    = $connexionManager->getClient();
+$navigationManager         = new NavigationManager($connexionManager->getClient());
+$productAttributeExtractor = new ProductAttributeExtractor($navigationManager);
+
+$totalTime = microtime(true);
 
 $products = [];
-$crawler->filter('table#productGrid_table tbody tr')->each(
-    function ($productNode, $i) use ($client, &$products, $attributeManager) {
-        printf('Product ' . $i . PHP_EOL);
-        $editLink = $productNode->selectLink('Edit')->link();
-        $crawler = $client->click($editLink);
-        $attributes = [];
-
-        $crawler->filter('table.form-list tr')->each(
-            function ($attributeNode) use (&$attributes, $attributeManager) {
-                $attributes = array_merge(
-                    $attributes,
-                    $attributeManager->getMagentoAttributeAsArray($attributeNode)
-                );
-            }
+$productCatalogCrawler = $navigationManager->goToProductCatalog($mainPageCrawler);
+$productCatalogCrawler->filter('table#productGrid_table tbody tr')->each(
+    function ($productNode, $i) use (&$products, $productAttributeExtractor) {
+        $products[] = $productAttributeExtractor->extract(
+            $productNode,
+            $i+1
         );
-
-//        $sideMenuCrawler = $crawler->filter('div.side-col');
-//        $categoryLink    = $sideMenuCrawler->selectLink('Categories')->link();
-//        $categoryCrawler = $client->click($categoryLink);
-//        $categoryNode    = $categoryCrawler->filter('div#product-categories');
-//        die(var_dump($categoryNode));
-//        $attributes      = array_merge(
-//            $attributes,
-//            $attributeManager->getProductCategoriesAsArray($categoryNode)
-//        );
-
-//        var_dump($attributes);die();
-
-        $products[] = $attributes;
     }
 );
+$processProductsTime = microtime(true) - $totalTime;
+printf(PHP_EOL . '%d products extracted in %fs' . PHP_EOL, count($products), $processProductsTime);
+printf('Average time per product : %fs' . PHP_EOL, $processProductsTime / count($products));
+
+//$categories = [];
+//$manageCategoriesCrawler = $navigationManager->goToManageCategoriesPage($mainPageCrawler);
+//$manageCategoriesCrawler->filter('div.tree-holder ')->each(
+//    function ($categoryCrawler) use (&$categories) {
+//        die('trolo');
+//        die(var_dump($categoryCrawler));
+//        $categories[] = $categoryCrawler->text();
+//    }
+//);
+
 
 die(var_dump($products));
