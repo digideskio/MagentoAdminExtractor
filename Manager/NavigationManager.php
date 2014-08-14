@@ -46,13 +46,13 @@ class NavigationManager
      *
      * @param string $method
      * @param string $uri
+     * @param array  $params
      *
      * @return Crawler $crawler
      */
-    public function goToUri($method, $uri)
+    public function goToUri($method, $uri, $params = [])
     {
-        $crawler = $this->client->request($method, $uri);
-        return $crawler;
+        return $this->client->request($method, $uri, $params);
     }
 
     /**
@@ -89,5 +89,24 @@ class NavigationManager
     public function goToAttributeCatalog(Crawler $crawler)
     {
         return $this->goToLink($crawler, 'Manage Attributes');
+    }
+
+    /**
+     * @return Client
+     */
+    public function getClient()
+    {
+        return $this->client;
+    }
+
+    /**
+     * @param Client $client
+     *
+     * @return Client
+     */
+    public function setClient($client)
+    {
+        $this->client = $client;
+        return $this;
     }
 } 

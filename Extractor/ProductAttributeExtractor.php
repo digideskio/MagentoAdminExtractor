@@ -6,6 +6,7 @@ use Symfony\Component\DomCrawler\Crawler;
 
 class ProductAttributeExtractor extends AbstractExtractor
 {
+    const MAGENTO_ROOT_CATEGORY_ID = 1;
     /**
      * Allows you to extract product attributes
      *
@@ -32,18 +33,16 @@ class ProductAttributeExtractor extends AbstractExtractor
                 );
             }
         );
-        printf('%d attributes processed' . PHP_EOL, count($attributes));
 
-//        CATEGORIES
-//        $sideMenuCrawler = $crawler->filter('div.side-col');
-//        $categoryLink    = $sideMenuCrawler->selectLink('Categories')->link();
-//        $categoryCrawler = $client->click($categoryLink);
-//        $categoryNode    = $categoryCrawler->filter('div#product-categories');
-//        die(var_dump($categoryNode));
-//        $attributes      = array_merge(
-//            $attributes,
-//            $attributeManager->getProductCategoriesAsArray($categoryNode)
-//        );
+        $sideMenuCrawler    = $crawler->filter('div.side-col');
+        $categoryLink       = $sideMenuCrawler->filter('a#product_info_tabs_categories')->getNode(0)->getAttribute('href');
+        $categoryLink      .= '?isAjax=true';
+        $categoriesJsonLink = preg_replace('/categories/', 'categoriesJson', $categoryLink);
+        $params['form_key'] = $crawler->filter('input[name="form_key"]')->getNode(0)->getAttribute('value');
+        $params['category'] = self::MAGENTO_ROOT_CATEGORY_ID;
+
+        $attributes['categories'] = $this->getProductCategoriesAsArray($categoriesJsonLink, $params);
+        printf('%d attributes processed' . PHP_EOL, count($attributes));
 
         return $attributes;
     }
@@ -52,21 +51,35 @@ class ProductAttributeExtractor extends AbstractExtractor
      * Returns categories of Magento product
      * Returns ['categories' => ['categoryName 1', 'categoryName 2', ...]]
      *
-     * @param Crawler $categoryNode The category node from product edit view
-     *                              $crawler->filter('div#product_info_tabs_categories_content div#product-categories')
+     * @param string $categoriesJsonLink
+     * @param array  $params             ['form_key' => '', 'category' => id]
      *
      * @return array
      */
-    protected function getProductCategoriesAsArray(Crawler $categoryNode)
+    protected function getProductCategoriesAsArray($categoriesJsonLink, $params)
     {
         $categories = [];
+        $categoriesCrawler = $this->navigationManager->goToUri('POST', $categoriesJsonLink, $params);
+        $tempCategories = json_decode($categoriesCrawler->getNode(0)->nodeValue, true);
 
-        $categoryNode->filter('input[type="checkbox"]')->each(
-            function ($category) use (&$categories) {
-                $categories[] = $category->text();
+        foreach ($tempCategories as $category) {
+            if (isset($category['children'])) {
+                $params['category'] = $category['id'];
+                $lastResult = $this->getProductCategoriesAsArray($categoriesJsonLink, $params);
+
+                if (is_array($lastResult) && !empty($lastResult)) {
+                    $categories = array_merge($categories, $lastResult);
+                }
+                if (isset($category['checked']) && true === $category['checked']) {
+                    $categories[] = $category['text'];
+                }
+            } else {
+                if (isset($category['checked']) && true === $category['checked']) {
+                    $categories[] = $category['text'];
+                }
             }
-        );
+        }
 
-        return ['categories' => $categories];
+        return empty($categories) ? false : $categories;
     }
 }
