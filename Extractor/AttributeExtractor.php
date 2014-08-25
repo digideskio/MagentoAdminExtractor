@@ -4,6 +4,13 @@ namespace Extractor;
 
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Extractor for magento attributes
+ *
+ * @author    Willy Mesnage <willy.mesnage@akeneo.com>
+ * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
 class AttributeExtractor extends AbstractExtractor
 {
     /**
@@ -17,7 +24,7 @@ class AttributeExtractor extends AbstractExtractor
      */
     public function extract(
         Crawler $attributeCrawler,
-        $attributeName
+        $attributeName = ''
     ) {
         printf(PHP_EOL . 'Accessing to attribute %s edit page' . PHP_EOL, $attributeName);
         $crawler = $this->navigationManager->goToUri('GET', $attributeCrawler->getNode(0)->getAttribute('title'));

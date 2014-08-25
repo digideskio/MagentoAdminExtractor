@@ -43,7 +43,10 @@ $attributes = [];
 $attributeCatalogCrawler = $navigationManager->goToAttributeCatalog($mainPageCrawler);
 $attributeCatalogCrawler->filter('table#attributeGrid_table tbody tr')->each(
     function ($attributeCrawler, $i) use (&$attributes, $attributeExtractor) {
-        $attributes[] = $attributeExtractor->extract($attributeCrawler, ($i+1));
+        $attributes[] = $attributeExtractor->extract(
+            $attributeCrawler,
+            $i+1
+        );
     }
 );
 $processAttributesTime = microtime(true) - $totalTime;

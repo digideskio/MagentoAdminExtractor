@@ -4,11 +4,19 @@ namespace Extractor;
 
 use Symfony\Component\DomCrawler\Crawler;
 
+/**
+ * Extractor for magento product attributes
+ *
+ * @author    Willy Mesnage <willy.mesnage@akeneo.com>
+ * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
+ * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
+ */
 class ProductAttributeExtractor extends AbstractExtractor
 {
     const MAGENTO_ROOT_CATEGORY_ID = 1;
+
     /**
-     * Allows you to extract product attributes
+     * Allows to extract product attributes
      *
      * @param Crawler $productNodeCrawler Crawler positioned on the product in catalog page
      *                                    ex : $productCatalogCrawler->filter('table#productGrid_table tbody tr')
@@ -18,10 +26,10 @@ class ProductAttributeExtractor extends AbstractExtractor
      */
     public function extract(
         Crawler $productNodeCrawler,
-        $productName
+        $productName = ''
     ) {
         printf(PHP_EOL . 'Accessing to product %s edit page' . PHP_EOL, $productName);
-        $crawler = $this->navigationManager->goToLink($productNodeCrawler, 'Edit');
+        $crawler    = $this->navigationManager->goToLink($productNodeCrawler, 'Edit');
         $attributes = [];
 
         printf('Processing attributes' . PHP_EOL);
@@ -49,7 +57,7 @@ class ProductAttributeExtractor extends AbstractExtractor
 
     /**
      * Returns categories of Magento product
-     * Returns ['categories' => ['categoryName 1', 'categoryName 2', ...]]
+     * Returns ['categoryName 1', 'categoryName 2', ...]
      *
      * @param string $categoriesJsonLink
      * @param array  $params             ['form_key' => '', 'category' => id]
@@ -58,9 +66,9 @@ class ProductAttributeExtractor extends AbstractExtractor
      */
     protected function getProductCategoriesAsArray($categoriesJsonLink, $params)
     {
-        $categories = [];
+        $categories        = [];
         $categoriesCrawler = $this->navigationManager->goToUri('POST', $categoriesJsonLink, $params);
-        $tempCategories = json_decode($categoriesCrawler->getNode(0)->nodeValue, true);
+        $tempCategories    = json_decode($categoriesCrawler->getNode(0)->nodeValue, true);
 
         foreach ($tempCategories as $category) {
             if (isset($category['children'])) {
