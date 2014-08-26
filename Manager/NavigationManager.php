@@ -28,7 +28,7 @@ class NavigationManager
     }
 
     /**
-     * Allows you to navigate from $crawler to $link
+     * Allows to navigate from $crawler to $link
      *
      * @var Crawler $crawler
      * @var string  $link    Text in the link
@@ -49,7 +49,7 @@ class NavigationManager
     }
 
     /**
-     * Allows you to navigate to the uri
+     * Allows to navigate to the uri
      *
      * @param string $method
      * @param string $uri
@@ -63,7 +63,7 @@ class NavigationManager
     }
 
     /**
-     * Allows you to navigate to product catalog page
+     * Allows to navigate to product catalog page
      *
      * @param Crawler $crawler
      *
@@ -75,19 +75,7 @@ class NavigationManager
     }
 
     /**
-     * Allows you to navigate to manage categories page
-     *
-     * @param Crawler $crawler
-     *
-     * @return Crawler
-     */
-    public function goToManageCategoriesPage(Crawler $crawler)
-    {
-        return $this->goToLink($crawler, 'Manage Categories');
-    }
-
-    /**
-     * Allows you to navigate to attribute catalog page
+     * Allows to navigate to attribute catalog page
      *
      * @param Crawler $crawler
      *

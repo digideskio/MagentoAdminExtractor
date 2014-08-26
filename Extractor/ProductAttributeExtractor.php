@@ -11,7 +11,7 @@ use Symfony\Component\DomCrawler\Crawler;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class ProductAttributeExtractor extends AbstractExtractor
+class ProductAttributeExtractor extends AbstractGridExtractor
 {
     const MAGENTO_ROOT_CATEGORY_ID = 1;
 
