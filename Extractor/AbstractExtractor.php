@@ -122,4 +122,4 @@ abstract class AbstractExtractor
 
         return is_array($values) ? $values : [$values];
     }
-} 
+}
