@@ -64,5 +64,3 @@ printf('Average time per attribute : %fs' . PHP_EOL, $processAttributesTime / co
 //);
 
 // Pas possible de retrouver toutes les catégories car elles n'aparaissent qu'avec un clic javascript
-// Pas possible de retrouver les valeurs des options d'attributs
-

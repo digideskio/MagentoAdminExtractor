@@ -15,6 +15,7 @@ class AttributeExtractor extends AbstractExtractor
 {
     /**
      * Allows you to extract product attributes
+     * Returns ['param_1' => ['value1', ...], ...]
      *
      * @param Crawler $attributeCrawler Crawler positioned on the attribute in catalog page
      *                                  ex : $attributeCatalogCrawler->filter('table#attributeGrid_table tbody tr')
@@ -41,34 +42,94 @@ class AttributeExtractor extends AbstractExtractor
         );
         printf('%d parameters processed' . PHP_EOL, count($parameters));
 
-        $headers = [];
-        printf('Processing options' . PHP_EOL);
-        $crawler->filter('div#matage-options-panel table tr#attribute-options-table th')->each(
-            function ($heading, $i) use (&$headers) {
-                if ($i<5) {
-                    $headers[] = $heading->text();
-                }
-            }
-        );
+        $mappingJsLabel = $this->getOptionsParametersMapping($crawler);
+        $script         = $crawler
+            ->filter('div#product_attribute_tabs_labels_content script[type="text/javascript"]')
+            ->getNode(0)
+            ->textContent;
 
-        $options = [];
-        $crawler->filter('div#matage-options-panel table tr')->each(
-            function ($option, $i) use (&$options, $headers) {
-                // On n'a pas toutes les lignes du tableau ... Seulement la première
-                $option->filter('td input')->each(
-                    function ($label, $j) use (&$options, $headers, $i) {
-                        if ($j<5) {
-                            $options[$i][$headers[$j]] = $label->getNode(0)->getAttribute('value');
-                        }
-                    }
-                );
-            }
-        );
-        printf('%d options processed' . PHP_EOL, count($options));
-
-        $parameters['options'] = $options;
+        $parameters['options'] = $this->extractOptionsFromJS($script, $mappingJsLabel);
+        printf('%d options processed' . PHP_EOL, count($parameters['options']));
 
         return $parameters;
     }
 
-} 
+    /**
+     * Get the mapping between options parameters (which are store views, position, and is default or not) and
+     * javascript binding
+     * Returns (reversed) ['javascript_1' => 'option_parameter_1', 'javascript_2' => 'option_parameter_2', ...]
+     * Returns (not reversed) ['option_parameter_1' => 'javascript_1', 'option_parameter_2' => 'javascript_2', ...]
+     *
+     * @param Crawler $editAttributeCrawler Crawler positioned in the edit attribute page
+     * @param boolean $reverse              Get the reversed mapping or not (true by default)
+     *
+     * @return array                        Mapping between options and javascript binding
+     */
+    protected function getOptionsParametersMapping(Crawler $editAttributeCrawler, $reverse = true)
+    {
+        $headers = [];
+        $mapping = [];
+
+        $editAttributeCrawler->filter('div#matage-options-panel table tr#attribute-options-table th')->each(
+            function ($heading) use (&$headers) {
+                $headers[] = trim($heading->text());
+            }
+        );
+
+        $editAttributeCrawler->filter('div#matage-options-panel table tr td input')->each(
+            function ($input, $i) use (&$mapping, $headers) {
+                if(preg_match('#\{{2}(.*)\}{2}#', $input->getNode(0)->getAttribute('value'), $value)) {
+                    $mapping[$headers[$i]] = $value[1];
+                } else {
+                    $mapping[$headers[$i]] = '';
+                }
+            }
+        );
+
+        unset($mapping['Add Option']);
+        $mapping['Is Default'] = 'checked';
+        if (true === $reverse) {
+            $mapping = array_flip($mapping);
+        }
+
+        return $mapping;
+    }
+
+    /**
+     * Extracts options from the script which bind parameters in html table
+     * Returns [ ['optionParam_1' => 'value1', ...], [], ... ]
+     *
+     * @param string $script          Javascript from attribute edit page which bind values
+     * @param array $mappingJsLabel   Mapping between options and javascript binding
+     *
+     * @return array $computedOptions
+     */
+    protected function extractOptionsFromJS($script, array $mappingJsLabel)
+    {
+        $computedOptions = [];
+
+        if (preg_match_all('# attributeOption\.add\(\{([^\}]+)\}\);#', $script, $optionsParams)) {
+            $computedOptions = [];
+
+            foreach ($optionsParams[1] as $stuckParams) {
+                $params         = explode(',', $stuckParams);
+                $mappingJsValue = [];
+
+                foreach ($params as $param) {
+                    if (preg_match_all('#"(.*)":"(.*)"#', $param, $values)) {
+                        $mappingJsValue[$values[1][0]] = $values[2][0];
+                    }
+                }
+                unset($mappingJsValue['intype'], $mappingJsValue['id']);
+
+                $computedOption = [];
+                foreach ($mappingJsValue as $key => $value) {
+                    $computedOption[$mappingJsLabel[$key]] = $value;
+                }
+                $computedOptions[] = $computedOption;
+            }
+        }
+
+        return $computedOptions;
+    }
+}

@@ -116,4 +116,4 @@ class NavigationManager
         $this->client = $client;
         return $this;
     }
-} 
+}
