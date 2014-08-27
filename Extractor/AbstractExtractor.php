@@ -14,6 +14,8 @@ use Manager\NavigationManager;
  */
 abstract class AbstractExtractor
 {
+    const TAG_WARNING = '[WARNING]';
+
     /** @var NavigationManager */
     protected $navigationManager;
 

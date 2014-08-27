@@ -73,7 +73,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
                 $name = $attributeNode->filter('td.label')->text();
             }
         } else {
-            $name = 'Unknown name';
+            $name = self::TAG_WARNING . ' Unknown name';
         }
 
         return $name;
@@ -112,7 +112,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
                     break;
 
                 default:
-                    $values = 'Unknown type of input';
+                    $values = self::TAG_WARNING . ' Unknown type of input';
                     break;
             }
 
@@ -128,7 +128,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
             }
 
         } else {
-            $values = 'Unknown attribute type';
+            $values = self::TAG_WARNING . ' Unknown attribute type';
         }
 
         return is_array($values) ? $values : [$values];
