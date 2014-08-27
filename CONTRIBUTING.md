@@ -8,8 +8,7 @@ Every PR should start with:
 | Bug fix?             |
 | New feature?         |
 | BC breaks?           |
-| Checkstyle issues?*  |
-| PMD issues?**        |
+| Checkstyle issues?   |
 | Changelog updated?   |
 | Fixed tickets        |
 ```
