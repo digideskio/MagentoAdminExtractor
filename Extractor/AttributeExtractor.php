@@ -80,7 +80,7 @@ class AttributeExtractor extends AbstractGridExtractor
 
         $editAttributeCrawler->filter('div#matage-options-panel table tr td input')->each(
             function ($input, $i) use (&$mapping, $headers) {
-                if(preg_match('#\{{2}(.*)\}{2}#', $input->getNode(0)->getAttribute('value'), $value)) {
+                if (preg_match('#\{{2}(.*)\}{2}#', $input->getNode(0)->getAttribute('value'), $value)) {
                     $mapping[$headers[$i]] = $value[1];
                 } else {
                     $mapping[$headers[$i]] = '';
