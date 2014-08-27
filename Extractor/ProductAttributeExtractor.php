@@ -45,7 +45,10 @@ class ProductAttributeExtractor extends AbstractGridExtractor
         );
 
         $sideMenuCrawler    = $crawler->filter('div.side-col');
-        $categoryLink       = $sideMenuCrawler->filter('a#product_info_tabs_categories')->getNode(0)->getAttribute('href');
+        $categoryLink       = $sideMenuCrawler
+            ->filter('a#product_info_tabs_categories')
+            ->getNode(0)
+            ->getAttribute('href');
         $categoryLink      .= '?isAjax=true';
         $categoriesJsonLink = preg_replace('/categories/', 'categoriesJson', $categoryLink);
         $params['form_key'] = $crawler->filter('input[name="form_key"]')->getNode(0)->getAttribute('value');

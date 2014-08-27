@@ -26,4 +26,4 @@ abstract class AbstractExtractor
     }
 
     abstract public function extract(Crawler $nodeCrawler);
-} 
+}

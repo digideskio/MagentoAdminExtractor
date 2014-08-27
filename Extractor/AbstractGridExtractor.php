@@ -100,10 +100,10 @@ abstract class AbstractGridExtractor extends AbstractExtractor
 
                 case 'checkbox':
                 case 'radio':
-                    // To be tested
+                    // Need to be tested
                     $values = [];
                     $attributeNode->filter('td.value input')->each(
-                        function($input) use (&$values) {
+                        function ($input) use (&$values) {
                             if ($input->attr('checked')) {
                                 $values[] = $input->attr('value');
                             }
