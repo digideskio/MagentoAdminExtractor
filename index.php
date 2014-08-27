@@ -9,8 +9,8 @@ use Manager\MagentoAdminConnexionManager;
 use Manager\NavigationManager;
 
 const MAGENTO_ADMIN_URL   = 'http://magento.local/index.php/admin';
-const MAGENTO_ADMIN_LOGIN = 'root';
-const MAGENTO_ADMIN_PWD   = 'akeneo2014';
+const MAGENTO_ADMIN_LOGIN = 'some_login';
+const MAGENTO_ADMIN_PWD   = 'some_pwd';
 
 $connexionManager = new MagentoAdminConnexionManager(
     MAGENTO_ADMIN_URL,
