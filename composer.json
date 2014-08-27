@@ -1,4 +1,16 @@
 {
+    "name": "akeneo/magento-data-extractor-bundle",
+    "description": "Allows to extract data from Magento crawling the back-end",
+    "license": "OSL-3.0",
+    "keywords": ["akeneo", "ecommerce", "e-commerce", "magento", "extractor", "data"],
+    "homepage": "http://www.akeneo.com",
+    "authors": [
+        {
+            "name": "Willy Mesnage",
+            "email": "willy.mesnage@akeneo.com",
+            "homepage": "http://www.akeneo.com/"
+        }
+    ],
     "require": {
         "fabpot/goutte": "~2.0"
     },
@@ -7,5 +19,6 @@
             "Manager\\": "Manager",
             "Extractor\\": "Extractor"
         }
-    }
+    },
+    "minimum-stability": "dev"
 }
