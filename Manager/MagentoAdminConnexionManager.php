@@ -56,7 +56,7 @@ class MagentoAdminConnexionManager
         printf('Requesting %s' . PHP_EOL, $this->adminUrl);
         $crawler = $client->request('GET', $this->adminUrl);
 
-        printf('Login user "%s"' . PHP_EOL, $this->login);
+        printf('Login user "%s"' . PHP_EOL . PHP_EOL, $this->login);
         $form    = $crawler->selectButton('Login')->form();
         $crawler = $client->submit($form, ['login[username]' => $this->login, 'login[password]' => $this->password]);
 
