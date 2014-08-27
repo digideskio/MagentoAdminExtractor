@@ -31,6 +31,32 @@ abstract class AbstractGridExtractor extends AbstractExtractor
     }
 
     /**
+     * You must implement EXTRACTED_ENTITY const in your child class
+     *
+     * Filters rows of a catalog grid and extracts entities one by one
+     * Returns [ ['nameOfAttribute' => ['value', 'value2', ...], ...], ...]
+     *
+     * @param Crawler $gridCrawler Crawler positioned in the catalog grid of the entity
+     *
+     * @return array  $entities    Returns all entities which have been extracted
+     */
+    public function filterRowsAndExtract(Crawler $gridCrawler)
+    {
+        $entities = [];
+
+        $gridCrawler->filter('table#' . static::EXTRACTED_ENTITY . 'Grid_table tbody tr')->each(
+            function ($entityNode, $i) use (&$entities) {
+                $entities[] = $this->extract(
+                    $entityNode,
+                    $i+1
+                );
+            }
+        );
+
+        return $entities;
+    }
+
+    /**
      * Returns the name of the given attribute
      *
      * @param Crawler $attributeNode Node of the Magento attribute line in product edit mode
