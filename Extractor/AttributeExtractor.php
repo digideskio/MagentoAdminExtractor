@@ -13,6 +13,8 @@ use Symfony\Component\DomCrawler\Crawler;
  */
 class AttributeExtractor extends AbstractGridExtractor
 {
+    const EXTRACTED_ENTITY = 'attribute';
+
     /**
      * Allows you to extract product attributes
      * Returns ['param_1' => ['value1', ...], ...]

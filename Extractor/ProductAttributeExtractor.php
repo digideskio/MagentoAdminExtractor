@@ -14,9 +14,11 @@ use Symfony\Component\DomCrawler\Crawler;
 class ProductAttributeExtractor extends AbstractGridExtractor
 {
     const MAGENTO_ROOT_CATEGORY_ID = 1;
+    const EXTRACTED_ENTITY         = 'product';
 
     /**
      * Allows to extract product attributes
+     * Returns ['nameOfAttribute' => ['value', 'value2', ...], ...]
      *
      * @param Crawler $productNodeCrawler Crawler positioned on the product in catalog page
      *                                    ex : $productCatalogCrawler->filter('table#productGrid_table tbody tr')

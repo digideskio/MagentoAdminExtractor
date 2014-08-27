@@ -30,16 +30,8 @@ $totalTime = microtime(true);
 /*
  * Products extraction
  */
-$products = [];
 $productCatalogCrawler = $navigationManager->goToProductCatalog($mainPageCrawler);
-$productCatalogCrawler->filter('table#productGrid_table tbody tr')->each(
-    function ($productNode, $i) use (&$products, $productAttributeExtractor) {
-        $products[] = $productAttributeExtractor->extract(
-            $productNode,
-            $i+1
-        );
-    }
-);
+$products = $productAttributeExtractor->filterRowsAndExtract($productCatalogCrawler);
 $processProductsTime = microtime(true) - $totalTime;
 printf(PHP_EOL . '%d products extracted in %fs' . PHP_EOL, count($products), $processProductsTime);
 printf('Average time per product : %fs' . PHP_EOL, $processProductsTime / count($products));
@@ -47,16 +39,8 @@ printf('Average time per product : %fs' . PHP_EOL, $processProductsTime / count(
 /*
  * Attributes extraction
  */
-$attributes = [];
 $attributeCatalogCrawler = $navigationManager->goToAttributeCatalog($mainPageCrawler);
-$attributeCatalogCrawler->filter('table#attributeGrid_table tbody tr')->each(
-    function ($attributeCrawler, $i) use (&$attributes, $attributeExtractor) {
-        $attributes[] = $attributeExtractor->extract(
-            $attributeCrawler,
-            $i+1
-        );
-    }
-);
+$attributes = $attributeExtractor->filterRowsAndExtract($attributeCatalogCrawler);
 $processAttributesTime = microtime(true) - $processProductsTime;
 printf(PHP_EOL . '%d attributes extracted in %fs' . PHP_EOL, count($attributes), $processAttributesTime);
 printf('Average time per attribute : %fs' . PHP_EOL, $processAttributesTime / count($attributes));
