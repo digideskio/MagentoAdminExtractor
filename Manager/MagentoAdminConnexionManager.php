@@ -1,6 +1,6 @@
 <?php
 
-namespace MagentoExtractor\Manager;
+namespace Akeneo\Component\MagentoAdminExtractor\Manager;
 
 use Goutte\Client;
 
