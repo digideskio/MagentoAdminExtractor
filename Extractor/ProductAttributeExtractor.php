@@ -22,14 +22,12 @@ class ProductAttributeExtractor extends AbstractGridExtractor
      *
      * @param Crawler $productNodeCrawler Crawler positioned on the product in catalog page
      *                                    ex : $productCatalogCrawler->filter('table#productGrid_table tbody tr')
-     * @param mixed   $productName
+     * @param mixed   $productName        Name of the product which will be display in terminal
      *
-     * @return array  $attributes         Array with attributes of product
+     * @return array $attributes Array with attributes of product
      */
-    public function extract(
-        Crawler $productNodeCrawler,
-        $productName = ''
-    ) {
+    public function extract(Crawler $productNodeCrawler, $productName = '')
+    {
         printf(PHP_EOL . 'Accessing to product %s edit page' . PHP_EOL, $productName);
         $crawler    = $this->navigationManager->goToLink($productNodeCrawler, 'Edit');
         $attributes = [];
@@ -64,7 +62,7 @@ class ProductAttributeExtractor extends AbstractGridExtractor
      * Returns categories of Magento product
      * Returns ['categoryName 1', 'categoryName 2', ...]
      *
-     * @param string $categoriesJsonLink
+     * @param string $categoriesJsonLink Link to get categories in json in Magento
      * @param array  $params             ['form_key' => '', 'category' => id]
      *
      * @return array

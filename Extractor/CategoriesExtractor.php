@@ -20,7 +20,7 @@ class CategoriesExtractor extends AbstractExtractor
      *
      * @param Crawler $mainPageCrawler
      *
-     * @return array  $categories      Array with categories
+     * @return array $categories Array with categories
      */
     public function extract(Crawler $mainPageCrawler)
     {
@@ -60,7 +60,7 @@ class CategoriesExtractor extends AbstractExtractor
      * Returns [ ['param_1' => 'value', ..., 'children' => idem], [], ...]
      * first level is root categories
      *
-     * @param string $categoriesJsonLink
+     * @param string $categoriesJsonLink Link to get categories in json in Magento
      * @param array  $params             ['form_key' => '', 'id' => id]
      *
      * @return array $categories

@@ -22,7 +22,7 @@ $connexionManager = new MagentoAdminConnexionManager(
 
 $mainPageCrawler           = $connexionManager->connectToAdminPage();
 $client                    = $connexionManager->getClient();
-$navigationManager         = new NavigationManager($connexionManager->getClient());
+$navigationManager         = new NavigationManager($client);
 $productAttributeExtractor = new ProductAttributeExtractor($navigationManager);
 $attributeExtractor        = new AttributeExtractor($navigationManager);
 $categoriesExtractor       = new CategoriesExtractor($navigationManager);

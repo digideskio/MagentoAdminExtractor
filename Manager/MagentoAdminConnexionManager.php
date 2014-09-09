@@ -26,22 +26,19 @@ class MagentoAdminConnexionManager
     protected $client;
 
     /**
-     * @param $url      string
-     * @param $login    string
-     * @param $password string
+     * @param string $adminUrl
+     * @param string $login
+     * @param string $password
      */
-    public function __construct(
-        $adminUrl,
-        $login,
-        $password
-    ) {
+    public function __construct($adminUrl, $login, $password)
+    {
         $this->adminUrl = $adminUrl;
         $this->login    = $login;
         $this->password = $password;
     }
 
     /**
-     * Allows you to connect to Magento admin page
+     * Allows to connect to Magento admin page
      *
      * @return Crawler Admin page crawler
      */
@@ -85,6 +82,7 @@ class MagentoAdminConnexionManager
     public function setAdminUrl($adminUrl)
     {
         $this->adminUrl = $adminUrl;
+
         return $this;
     }
 
@@ -104,6 +102,7 @@ class MagentoAdminConnexionManager
     public function setLogin($login)
     {
         $this->login = $login;
+
         return $this;
     }
 
@@ -123,6 +122,7 @@ class MagentoAdminConnexionManager
     public function setPassword($password)
     {
         $this->password = $password;
+
         return $this;
     }
 

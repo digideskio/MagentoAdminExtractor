@@ -27,5 +27,10 @@ abstract class AbstractExtractor
         $this->navigationManager = $navigationManager;
     }
 
+    /**
+     * @param Crawler $nodeCrawler
+     *
+     * @return mixed
+     */
     abstract public function extract(Crawler $nodeCrawler);
 }
