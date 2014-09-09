@@ -66,8 +66,8 @@ abstract class AbstractGridExtractor extends AbstractExtractor
      */
     protected function getAttributeName(Crawler $attributeNode)
     {
-        if ($attributeNode->filter('td.label')->getNode(0)) {
-            if ($attributeNode->filter('td.label label')->getNode(0)) {
+        if ($this->getNode($attributeNode->filter('td.label'), 0)) {
+            if ($this->getNode($attributeNode->filter('td.label label'), 0)) {
                 $name = $attributeNode->filter('td.label label')->attr('for');
             } else {
                 $name = $attributeNode->filter('td.label')->text();
@@ -90,7 +90,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
      */
     protected function getAttributeValues(Crawler $attributeNode)
     {
-        if ($attributeNode->filter('td.value input')->getNode(0)) {
+        if ($this->getNode($attributeNode->filter('td.value input'), 0)) {
             $type = $attributeNode->filter('td.value input')->attr('type');
 
             switch ($type) {
@@ -116,12 +116,12 @@ abstract class AbstractGridExtractor extends AbstractExtractor
                     break;
             }
 
-        } elseif ($attributeNode->filter('td.value textarea')->getNode(0)) {
+        } elseif ($this->getNode($attributeNode->filter('td.value textarea'), 0)) {
             $values = $attributeNode->filter('td.value textarea')->text();
 
-        } elseif ($attributeNode->filter('td.value select')->getNode(0)) {
+        } elseif ($this->getNode($attributeNode->filter('td.value select'), 0)) {
 
-            if ($attributeNode->filter('td.value select option:selected')->getNode(0)) {
+            if ($this->getNode($attributeNode->filter('td.value select option:selected'), 0)) {
                 $values = $attributeNode->filter('td.value select option:selected')->text();
             } else {
                 $values = 'No option selected';

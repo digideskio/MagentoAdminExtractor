@@ -33,4 +33,22 @@ abstract class AbstractExtractor
      * @return mixed
      */
     abstract public function extract(Crawler $nodeCrawler);
+
+    /**
+     * Give the required node by the position
+     * TODO: If Akeneo Pim update its version of Symfony,remove this method and use Crawler->getNode()
+     *
+     * @param Crawler $crawler
+     * @param integer $position
+     *
+     * @return mixed DOMElement or null
+     */
+    public function getNode(Crawler $crawler, $position)
+    {
+        foreach ($crawler as $i => $node) {
+            if ($i == $position) {
+                return $node;
+            }
+        }
+    }
 }
