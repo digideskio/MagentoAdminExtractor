@@ -1,9 +1,9 @@
 <?php
 
-namespace MagentoAdminExtractor\Extractor;
+namespace MagentoTest\Extractor;
 
 use Symfony\Component\DomCrawler\Crawler;
-use MagentoAdminExtractor\Manager\NavigationManager;
+use ExtractorBundle\Manager\NavigationManager;
 
 /**
  * Abstract extractor for magento
