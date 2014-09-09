@@ -28,7 +28,7 @@ class AttributeExtractor extends AbstractGridExtractor
     public function extract(Crawler $attributeCrawler, $attributeName = '')
     {
         printf(PHP_EOL . 'Accessing to attribute %s edit page' . PHP_EOL, $attributeName);
-        $crawler = $this->navigationManager->goToUri('GET', $attributeCrawler->getNode(0)->getAttribute('title'));
+        $crawler = $this->navigationManager->goToUri('GET', $this->getNode($attributeCrawler, 0)->getAttribute('title'));
         $parameters = [];
 
         printf('Processing parameters' . PHP_EOL);
@@ -43,9 +43,10 @@ class AttributeExtractor extends AbstractGridExtractor
         printf('%d parameters processed' . PHP_EOL, count($parameters));
 
         $mappingJsLabel = $this->getOptionsParametersMapping($crawler);
-        $script         = $crawler
-            ->filter('div#product_attribute_tabs_labels_content script[type="text/javascript"]')
-            ->getNode(0)
+        $script         = $this->getNode(
+                $crawler->filter('div#product_attribute_tabs_labels_content script[type="text/javascript"]'),
+                0
+            )
             ->textContent;
 
         $parameters['options'] = $this->extractOptionsFromJS($script, $mappingJsLabel);
@@ -78,7 +79,7 @@ class AttributeExtractor extends AbstractGridExtractor
 
         $editAttributeCrawler->filter('div#matage-options-panel table tr td input')->each(
             function ($input, $i) use (&$mapping, $headers) {
-                if (preg_match('#\{{2}(.*)\}{2}#', $input->getNode(0)->getAttribute('value'), $value)) {
+                if (preg_match('#\{{2}(.*)\}{2}#', $this->getNode($input, 0)->getAttribute('value'), $value)) {
                     $mapping[$headers[$i]] = $value[1];
                 } else {
                     $mapping[$headers[$i]] = '';

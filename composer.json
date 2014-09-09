@@ -12,7 +12,8 @@
         }
     ],
     "require": {
-        "fabpot/goutte": "~2.0"
+        "fabpot/goutte": "~2.0",
+        "symfony/dom-crawler": "~2.3.19"
     },
     "autoload": {
         "psr-4": {

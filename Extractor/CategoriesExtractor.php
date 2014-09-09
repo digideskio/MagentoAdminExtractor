@@ -32,11 +32,13 @@ class CategoriesExtractor extends AbstractExtractor
         $categoriesPageCrawler = $this->navigationManager->getClient()->click($link);
 
         $categoriesJsonLink = $link->getUri() . 'categoriesJson/?isAjax=true';
-        $script  = $categoriesPageCrawler
-            ->filter('div.side-col script[type="text/javascript"]')
-            ->getNode(1)
+        $script  = $this
+            ->getNode(
+                $categoriesPageCrawler->filter('div.side-col script[type="text/javascript"]'),
+                1
+            )
             ->textContent;
-        $formKey = $categoriesPageCrawler->filter('input[name="form_key"]')->getNode(0)->getAttribute('value');
+        $formKey = $this->getNode($categoriesPageCrawler->filter('input[name="form_key"]'), 0)->getAttribute('value');
 
         if (preg_match('# data : (\[\{.*\}\])#', $script, $categoriesData)) {
             $rootCategories = json_decode($categoriesData[1], true);
@@ -69,7 +71,7 @@ class CategoriesExtractor extends AbstractExtractor
     {
         $categories        = [];
         $categoriesCrawler = $this->navigationManager->goToUri('POST', $categoriesJsonLink, $params);
-        $tempCategories    = json_decode($categoriesCrawler->getNode(0)->nodeValue, true);
+        $tempCategories    = json_decode($this->getNode($categoriesCrawler, 0)->nodeValue, true);
 
         foreach ($tempCategories as $key => $category) {
             if (isset($category['children'])) {
