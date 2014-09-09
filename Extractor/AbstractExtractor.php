@@ -36,6 +36,7 @@ abstract class AbstractExtractor
 
     /**
      * Give the required node by the position
+     * TODO: If Akeneo Pim update its version of Symfony,remove this method and use Crawler->getNode()
      *
      * @param Crawler $crawler
      * @param integer $position
