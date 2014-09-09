@@ -1,6 +1,6 @@
 <?php
 
-namespace MagentoAdminExtractor\Extractor;
+namespace Akeneo\Component\MagentoAdminExtractor\Extractor;
 
 use Symfony\Component\DomCrawler\Crawler;
 

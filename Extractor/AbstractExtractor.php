@@ -1,9 +1,9 @@
 <?php
 
-namespace MagentoAdminExtractor\Extractor;
+namespace Akeneo\Component\MagentoAdminExtractor\Extractor;
 
 use Symfony\Component\DomCrawler\Crawler;
-use MagentoAdminExtractor\Manager\NavigationManager;
+use Akeneo\Component\MagentoAdminExtractor\Manager\NavigationManager;
 
 /**
  * Abstract extractor for magento

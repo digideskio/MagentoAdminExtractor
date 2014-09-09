@@ -1,14 +1,14 @@
 <?php
 
-namespace MagentoAdminExtractor;
+namespace Akeneo\Component\MagentoAdminExtractor;
 
 require 'vendor/autoload.php';
 
-use MagentoAdminExtractor\Extractor\ProductAttributeExtractor;
-use MagentoAdminExtractor\Extractor\AttributeExtractor;
-use MagentoAdminExtractor\Extractor\CategoriesExtractor;
-use MagentoAdminExtractor\Manager\MagentoAdminConnexionManager;
-use MagentoAdminExtractor\Manager\NavigationManager;
+use Akeneo\Component\MagentoAdminExtractor\Extractor\ProductAttributeExtractor;
+use Akeneo\Component\MagentoAdminExtractor\Extractor\AttributeExtractor;
+use Akeneo\Component\MagentoAdminExtractor\Extractor\CategoriesExtractor;
+use Akeneo\Component\MagentoAdminExtractor\Manager\MagentoAdminConnexionManager;
+use Akeneo\Component\MagentoAdminExtractor\Manager\NavigationManager;
 
 const MAGENTO_ADMIN_URL   = 'http://magento.local/index.php/admin';
 const MAGENTO_ADMIN_LOGIN = 'some_login';

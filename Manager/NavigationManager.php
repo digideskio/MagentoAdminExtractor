@@ -1,6 +1,6 @@
 <?php
 
-namespace MagentoAdminExtractor\Manager;
+namespace Akeneo\Component\MagentoAdminExtractor\Manager;
 
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
