@@ -1,9 +1,9 @@
 <?php
 
-namespace Extractor;
+namespace ExtractorBundle\Extractor;
 
 use Symfony\Component\DomCrawler\Crawler;
-use Manager\NavigationManager;
+use ExtractorBundle\Manager\NavigationManager;
 
 /**
  * Abstract extractor for magento
@@ -27,5 +27,10 @@ abstract class AbstractExtractor
         $this->navigationManager = $navigationManager;
     }
 
+    /**
+     * @param Crawler $nodeCrawler
+     *
+     * @return mixed
+     */
     abstract public function extract(Crawler $nodeCrawler);
 }

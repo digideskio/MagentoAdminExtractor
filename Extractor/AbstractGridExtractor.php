@@ -1,6 +1,6 @@
 <?php
 
-namespace Extractor;
+namespace ExtractorBundle\Extractor;
 
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -38,7 +38,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
      *
      * @param Crawler $gridCrawler Crawler positioned in the catalog grid of the entity
      *
-     * @return array  $entities    Returns all entities which have been extracted
+     * @return array $entities    Returns all entities which have been extracted
      */
     public function filterRowsAndExtract(Crawler $gridCrawler)
     {
@@ -62,7 +62,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
      * @param Crawler $attributeNode Node of the Magento attribute line in product edit mode
      *                               ($crawler->filter('table.form-list tr'))
      *
-     * @return string                Name of the attribute
+     * @return string Name of the attribute
      */
     protected function getAttributeName(Crawler $attributeNode)
     {
@@ -86,7 +86,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
      * @param Crawler $attributeNode Node of the attribute line in product edit mode
      *                               ($crawler->filter('table.form-list tr'))
      *
-     * @return array                 Magento attribute values
+     * @return array Magento attribute values
      */
     protected function getAttributeValues(Crawler $attributeNode)
     {

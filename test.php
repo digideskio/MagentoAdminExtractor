@@ -1,12 +1,14 @@
 <?php
 
+namespace ExtractorBundle;
+
 require 'vendor/autoload.php';
 
-use Extractor\ProductAttributeExtractor;
-use Extractor\AttributeExtractor;
-use Extractor\CategoriesExtractor;
-use Manager\MagentoAdminConnexionManager;
-use Manager\NavigationManager;
+use ExtractorBundle\Extractor\ProductAttributeExtractor;
+use ExtractorBundle\Extractor\AttributeExtractor;
+use ExtractorBundle\Extractor\CategoriesExtractor;
+use ExtractorBundle\Manager\MagentoAdminConnexionManager;
+use ExtractorBundle\Manager\NavigationManager;
 
 const MAGENTO_ADMIN_URL   = 'http://magento.local/index.php/admin';
 const MAGENTO_ADMIN_LOGIN = 'some_login';
@@ -20,7 +22,7 @@ $connexionManager = new MagentoAdminConnexionManager(
 
 $mainPageCrawler           = $connexionManager->connectToAdminPage();
 $client                    = $connexionManager->getClient();
-$navigationManager         = new NavigationManager($connexionManager->getClient());
+$navigationManager         = new NavigationManager($client);
 $productAttributeExtractor = new ProductAttributeExtractor($navigationManager);
 $attributeExtractor        = new AttributeExtractor($navigationManager);
 $categoriesExtractor       = new CategoriesExtractor($navigationManager);

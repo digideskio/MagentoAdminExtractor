@@ -1,6 +1,6 @@
 <?php
 
-namespace Manager;
+namespace ExtractorBundle\Manager;
 
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
@@ -28,10 +28,10 @@ class NavigationManager
     }
 
     /**
-     * Allows to navigate from $crawler to $link
+     * Allows to navigate from crawler to link
      *
-     * @var Crawler $crawler
-     * @var string  $link    Text in the link
+     * @param Crawler $crawler  Crawler
+     * @param string  $linkName Text in the link
      *
      * @return Crawler
      */
@@ -102,6 +102,7 @@ class NavigationManager
     public function setClient($client)
     {
         $this->client = $client;
+
         return $this;
     }
 }

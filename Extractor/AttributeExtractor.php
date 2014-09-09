@@ -1,6 +1,6 @@
 <?php
 
-namespace Extractor;
+namespace ExtractorBundle\Extractor;
 
 use Symfony\Component\DomCrawler\Crawler;
 
@@ -16,19 +16,17 @@ class AttributeExtractor extends AbstractGridExtractor
     const EXTRACTED_ENTITY = 'attribute';
 
     /**
-     * Allows you to extract product attributes
+     * Allows to extract product attributes
      * Returns ['param_1' => ['value1', ...], ...]
      *
      * @param Crawler $attributeCrawler Crawler positioned on the attribute in catalog page
      *                                  ex : $attributeCatalogCrawler->filter('table#attributeGrid_table tbody tr')
-     * @param mixed   $attributeName
+     * @param mixed   $attributeName    Name of the attribute which will be display in terminal
      *
-     * @return array  $attributes       Array with parameters of attribute
+     * @return array $attributes Array with parameters of attribute
      */
-    public function extract(
-        Crawler $attributeCrawler,
-        $attributeName = ''
-    ) {
+    public function extract(Crawler $attributeCrawler, $attributeName = '')
+    {
         printf(PHP_EOL . 'Accessing to attribute %s edit page' . PHP_EOL, $attributeName);
         $crawler = $this->navigationManager->goToUri('GET', $attributeCrawler->getNode(0)->getAttribute('title'));
         $parameters = [];
@@ -65,7 +63,7 @@ class AttributeExtractor extends AbstractGridExtractor
      * @param Crawler $editAttributeCrawler Crawler positioned in the edit attribute page
      * @param boolean $reverse              Get the reversed mapping or not (true by default)
      *
-     * @return array                        Mapping between options and javascript binding
+     * @return array Mapping between options and javascript binding
      */
     protected function getOptionsParametersMapping(Crawler $editAttributeCrawler, $reverse = true)
     {
@@ -101,8 +99,8 @@ class AttributeExtractor extends AbstractGridExtractor
      * Extracts options from the script which bind parameters in html table
      * Returns [ ['optionParam_1' => 'value1', ...], [], ... ]
      *
-     * @param string $script          Javascript from attribute edit page which bind values
-     * @param array $mappingJsLabel   Mapping between options and javascript binding
+     * @param string $script         Javascript from attribute edit page which bind values
+     * @param array  $mappingJsLabel Mapping between options and javascript binding
      *
      * @return array $computedOptions
      */
