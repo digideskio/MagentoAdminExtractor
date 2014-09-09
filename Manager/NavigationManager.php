@@ -1,6 +1,6 @@
 <?php
 
-namespace ExtractorBundle\Manager;
+namespace MagentoExtractor\Manager;
 
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
