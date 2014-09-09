@@ -16,8 +16,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Manager\\": "Manager",
-            "Extractor\\": "Extractor"
+            "ExtractorBundle\\": ""
         }
     },
     "minimum-stability": "dev"

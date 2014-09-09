@@ -1,6 +1,6 @@
 <?php
 
-namespace Manager;
+namespace ExtractorBundle\Manager;
 
 use Goutte\Client;
 use Symfony\Component\DomCrawler\Crawler;
