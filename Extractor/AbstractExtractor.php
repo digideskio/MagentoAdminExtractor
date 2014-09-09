@@ -1,6 +1,6 @@
 <?php
 
-namespace ExtractorBundle\Extractor;
+namespace MagentoTest\Extractor;
 
 use Symfony\Component\DomCrawler\Crawler;
 use ExtractorBundle\Manager\NavigationManager;
