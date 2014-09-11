@@ -42,16 +42,11 @@ class ProductAttributeExtractor extends AbstractGridExtractor
             }
         );
 
-        $sideMenuCrawler = $crawler->filter('div.side-col');
-        $categoryLink    = $this
-            ->getNode(
-                $sideMenuCrawler->filter('a#product_info_tabs_categories'),
-                0
-            )
-            ->getAttribute('href');
+        $sideMenuCrawler    = $crawler->filter('div.side-col');
+        $categoryLink       = $sideMenuCrawler->filter('a#product_info_tabs_categories')->first()->attr('href');
         $categoryLink      .= '?isAjax=true';
         $categoriesJsonLink = preg_replace('/categories/', 'categoriesJson', $categoryLink);
-        $params['form_key'] = $this->getNode($crawler->filter('input[name="form_key"]'), 0)->getAttribute('value');
+        $params['form_key'] = $crawler->filter('input[name="form_key"]')->first()->attr('value');
         $params['category'] = self::MAGENTO_ROOT_CATEGORY_ID;
 
         $attributes['categories'] = $this->getProductCategoriesAsArray($categoriesJsonLink, $params);
@@ -73,7 +68,7 @@ class ProductAttributeExtractor extends AbstractGridExtractor
     {
         $categories        = [];
         $categoriesCrawler = $this->navigationManager->goToUri('POST', $categoriesJsonLink, $params);
-        $tempCategories    = json_decode($this->getNode($categoriesCrawler, 0)->nodeValue, true);
+        $tempCategories    = json_decode($categoriesCrawler->first()->text(), true);
 
         foreach ($tempCategories as $category) {
             if (isset($category['children'])) {
