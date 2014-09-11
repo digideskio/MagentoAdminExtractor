@@ -46,12 +46,11 @@ class NavigationManager
                 $link    = $crawler->selectLink($linkName)->link();
                 $crawler = $this->client->click($link);
             } catch (\InvalidArgumentException $e) {
-                throw new NavigationException(PHP_EOL . '[ERROR] ' . $e->getMessage() . '. A problem can be that the' .
-                    ' given link "' . $linkName .'" can not be found.' . PHP_EOL);
+                throw new NavigationException('[ERROR] ' . $e->getMessage() . '. A problem can be that the' .
+                    ' given link "' . $linkName .'" can not be found.');
             }
         } else {
-            throw new NavigationException(PHP_EOL . '[ERROR] $linkname "' . $linkName .'" has to be a string.'
-                . PHP_EOL);
+            throw new NavigationException('[ERROR] $linkname "' . $linkName .'" has to be a string.');
         }
 
         return $crawler;
@@ -89,8 +88,8 @@ class NavigationManager
             $link    = $crawler->selectLink('Manage Products')->link();
             $crawler = $this->client->click($link);
         } catch (\InvalidArgumentException $e) {
-            throw new NavigationException(PHP_EOL . '[ERROR] ' . $e->getMessage() . '. A problem can be that the' .
-                ' link "Manage Products" can not be found.' . PHP_EOL);
+            throw new NavigationException('[ERROR] ' . $e->getMessage() . '. A problem can be that the' .
+                ' link "Manage Products" can not be found.');
         }
 
         if (is_numeric($rowsPerPage)) {
@@ -129,8 +128,8 @@ class NavigationManager
                 $link    = $crawler->selectLink('Manage Attributes')->link();
                 $crawler = $this->client->click($link);
             } catch (\InvalidArgumentException $e) {
-                throw new NavigationException(PHP_EOL . '[ERROR] ' . $e->getMessage() . '. A problem can be that the' .
-                    ' link "Manage Attributes" can not be found.' . PHP_EOL);
+                throw new NavigationException('[ERROR] ' . $e->getMessage() . '. A problem can be that the' .
+                    ' link "Manage Attributes" can not be found.');
             }
 
             try {

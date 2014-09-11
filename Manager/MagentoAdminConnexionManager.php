@@ -60,8 +60,7 @@ class MagentoAdminConnexionManager
         $crawler = $client->submit($form, ['login[username]' => $this->login, 'login[password]' => $this->password]);
 
         if (count($crawler->filter('li.error-msg')) > 0) {
-            throw new LogInException(PHP_EOL . '[ERROR] ' . $crawler->filter('li.error-msg')->first()->text()
-                . PHP_EOL);
+            throw new LogInException('[ERROR] ' . $crawler->filter('li.error-msg')->first()->text());
         }
 
         $this->client = $client;
