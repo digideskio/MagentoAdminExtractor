@@ -41,6 +41,8 @@ class MagentoAdminConnexionManager
      * Allows to connect to Magento admin page
      *
      * @return Crawler Admin page crawler
+     *
+     * @throws LogInException if there is a problem with connexion
      */
     public function connectToAdminPage()
     {
@@ -57,6 +59,10 @@ class MagentoAdminConnexionManager
         $form    = $crawler->selectButton('Login')->form();
         $crawler = $client->submit($form, ['login[username]' => $this->login, 'login[password]' => $this->password]);
 
+        if (count($crawler->filter('li.error-msg')) > 0) {
+            throw new LogInException('[ERROR] ' . $crawler->filter('li.error-msg')->first()->text());
+        }
+
         $this->client = $client;
 
         return $crawler;
@@ -64,6 +70,8 @@ class MagentoAdminConnexionManager
 
     /**
      * @return Client
+     *
+     * @throws LogInException if there is a problem with connexion
      */
     public function getClient()
     {

@@ -23,6 +23,8 @@ class AttributeExtractor extends AbstractGridExtractor
      *                                  ex : $attributeCatalogCrawler->filter('table#attributeGrid_table tbody tr')
      * @param mixed   $attributeName    Name of the attribute which will be display in terminal
      *
+     * @throws \RuntimeException if the CssSelector Component is not available
+     *
      * @return array $attributes Array with parameters of attribute
      */
     public function extract(Crawler $attributeCrawler, $attributeName = '')

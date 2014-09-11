@@ -7,6 +7,7 @@ require 'vendor/autoload.php';
 use Akeneo\Component\MagentoAdminExtractor\Extractor\ProductAttributeExtractor;
 use Akeneo\Component\MagentoAdminExtractor\Extractor\AttributeExtractor;
 use Akeneo\Component\MagentoAdminExtractor\Extractor\CategoriesExtractor;
+use Akeneo\Component\MagentoAdminExtractor\Manager\LogInException;
 use Akeneo\Component\MagentoAdminExtractor\Manager\MagentoAdminConnexionManager;
 use Akeneo\Component\MagentoAdminExtractor\Manager\NavigationManager;
 
@@ -20,8 +21,13 @@ $connexionManager = new MagentoAdminConnexionManager(
     MAGENTO_ADMIN_PWD
 );
 
-$mainPageCrawler           = $connexionManager->connectToAdminPage();
-$client                    = $connexionManager->getClient();
+try {
+    $mainPageCrawler = $connexionManager->connectToAdminPage();
+    $client          = $connexionManager->getClient();
+} catch (LogInException $e) {
+    die($e->getMessage() . PHP_EOL);
+}
+
 $navigationManager         = new NavigationManager($client);
 $productAttributeExtractor = new ProductAttributeExtractor($navigationManager);
 $attributeExtractor        = new AttributeExtractor($navigationManager);

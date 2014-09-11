@@ -38,7 +38,9 @@ abstract class AbstractGridExtractor extends AbstractExtractor
      *
      * @param Crawler $gridCrawler Crawler positioned in the catalog grid of the entity
      *
-     * @return array $entities    Returns all entities which have been extracted
+     * @throws \RuntimeException if the CssSelector Component is not available
+     *
+     * @return array $entities Returns all entities which have been extracted
      */
     public function filterRowsAndExtract(Crawler $gridCrawler)
     {
