@@ -33,7 +33,7 @@ $totalTime = microtime(true);
  * Products extraction
  */
 $timeFromBeginning = microtime(true);
-$productCatalogCrawler = $navigationManager->goToProductCatalog($mainPageCrawler);
+$productCatalogCrawler = $navigationManager->goToProductCatalog($mainPageCrawler, 50);
 $products = $productAttributeExtractor->filterRowsAndExtract($productCatalogCrawler);
 $processProductsTime = microtime(true) - $timeFromBeginning;
 printf(PHP_EOL . '%d products extracted in %fs' . PHP_EOL, count($products), $processProductsTime);
@@ -44,7 +44,7 @@ printf('/******************************/' . PHP_EOL . PHP_EOL);
  * Attributes extraction
  */
 $timeFromBeginning = microtime(true);
-$attributeCatalogCrawler = $navigationManager->goToAttributeCatalog($mainPageCrawler);
+$attributeCatalogCrawler = $navigationManager->goToAttributeCatalog($mainPageCrawler, 50);
 $attributes = $attributeExtractor->filterRowsAndExtract($attributeCatalogCrawler);
 $processAttributesTime = microtime(true) - $timeFromBeginning;
 printf(PHP_EOL . '%d attributes extracted in %fs' . PHP_EOL, count($attributes), $processAttributesTime);
