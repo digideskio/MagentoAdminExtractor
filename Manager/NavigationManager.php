@@ -77,8 +77,7 @@ class NavigationManager
         $link    = $crawler->selectLink('Manage Products')->link();
         $crawler = $this->client->click($link);
 
-        if (is_numeric($rowsPerPage))
-        {
+        if (is_numeric($rowsPerPage)) {
             try {
                 $formKey = $crawler->filter('input[name="form_key"]')->attr('value');
                 $viewPerPageUri = $link->getUri() . '/grid/limit/' . $rowsPerPage . '/?ajax=true&isAjax=true';
