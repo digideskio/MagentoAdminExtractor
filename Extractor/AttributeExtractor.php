@@ -43,7 +43,8 @@ class AttributeExtractor extends AbstractGridExtractor
         printf('%d parameters processed' . PHP_EOL, count($parameters));
 
         $mappingJsLabel = $this->getOptionsParametersMapping($crawler);
-        $script         = $this->getNode(
+        $script         = $this
+            ->getNode(
                 $crawler->filter('div#product_attribute_tabs_labels_content script[type="text/javascript"]'),
                 0
             )
