@@ -66,11 +66,11 @@ abstract class AbstractGridExtractor extends AbstractExtractor
      */
     protected function getAttributeName(Crawler $attributeNode)
     {
-        if ($this->getNode($attributeNode->filter('td.label'), 0)) {
-            if ($this->getNode($attributeNode->filter('td.label label'), 0)) {
-                $name = $attributeNode->filter('td.label label')->attr('for');
+        if (count($attributeNode->filter('td.label')) > 0) {
+            if (count($attributeNode->filter('td.label label')) > 0) {
+                $name = $attributeNode->filter('td.label label')->first()->attr('for');
             } else {
-                $name = $attributeNode->filter('td.label')->text();
+                $name = $attributeNode->filter('td.label')->first()->text();
             }
         } else {
             $name = self::TAG_WARNING . ' Unknown name';
@@ -90,12 +90,12 @@ abstract class AbstractGridExtractor extends AbstractExtractor
      */
     protected function getAttributeValues(Crawler $attributeNode)
     {
-        if ($this->getNode($attributeNode->filter('td.value input'), 0)) {
-            $type = $attributeNode->filter('td.value input')->attr('type');
+        if (count($attributeNode->filter('td.value input')) > 0) {
+            $type = $attributeNode->filter('td.value input')->first()->attr('type');
 
             switch ($type) {
                 case 'text':
-                    $values = $attributeNode->filter('td.value input')->attr('value');
+                    $values = $attributeNode->filter('td.value input')->first()->attr('value');
                     break;
 
                 case 'checkbox':
@@ -116,13 +116,12 @@ abstract class AbstractGridExtractor extends AbstractExtractor
                     break;
             }
 
-        } elseif ($this->getNode($attributeNode->filter('td.value textarea'), 0)) {
-            $values = $attributeNode->filter('td.value textarea')->text();
+        } elseif (count($attributeNode->filter('td.value textarea')) > 0) {
+            $values = $attributeNode->filter('td.value textarea')->first()->text();
 
-        } elseif ($this->getNode($attributeNode->filter('td.value select'), 0)) {
-
-            if ($this->getNode($attributeNode->filter('td.value select option:selected'), 0)) {
-                $values = $attributeNode->filter('td.value select option:selected')->text();
+        } elseif (count($attributeNode->filter('td.value select')) > 0) {
+            if (count($attributeNode->filter('td.value select option:selected')) > 0) {
+                $values = $attributeNode->filter('td.value select option:selected')->first()->text();
             } else {
                 $values = 'No option selected';
             }
