@@ -83,12 +83,11 @@ abstract class AbstractGridExtractor extends AbstractExtractor
 
     /**
      * Returns values of given attribute
-     * Returns ['value1', 'value2', ...]
      *
      * @param Crawler $attributeNode Node of the attribute line in product edit mode
      *                               ($crawler->filter('table.form-list tr'))
      *
-     * @return array Magento attribute values
+     * @return mixed Magento attribute values
      */
     protected function getAttributeValues(Crawler $attributeNode)
     {
@@ -132,6 +131,6 @@ abstract class AbstractGridExtractor extends AbstractExtractor
             $values = self::TAG_WARNING . ' Unknown attribute type';
         }
 
-        return is_array($values) ? $values : [$values];
+        return $values;
     }
 }
