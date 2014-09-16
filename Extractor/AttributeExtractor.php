@@ -42,6 +42,7 @@ class AttributeExtractor extends AbstractGridExtractor
                 );
             }
         );
+        $parameters['title'][] = $this->getTitles($crawler);
         printf('%d parameters processed' . PHP_EOL, count($parameters));
 
         $mappingJsLabel = $this->getOptionsParametersMapping($crawler);
@@ -54,6 +55,34 @@ class AttributeExtractor extends AbstractGridExtractor
         printf('%d options processed' . PHP_EOL, count($parameters['options']));
 
         return $parameters;
+    }
+
+    /**
+     * Give each title translations of the attribute
+     * Returns ['storeview label 1' => 'translatedTitle', ...]
+     *
+     * @param Crawler $editAttributeCrawler Crawler positioned in the edit attribute page
+     *
+     * @return array
+     */
+    protected function getTitles(Crawler $editAttributeCrawler)
+    {
+        $headers = [];
+        $titles  = [];
+
+        $editAttributeCrawler->filter('table#attribute-labels-table th')->each(
+            function ($heading) use (&$headers) {
+                $headers[] = trim($heading->text());
+            }
+        );
+
+        $editAttributeCrawler->filter('table#attribute-labels-table td input')->each(
+            function ($input) use (&$titles) {
+                $titles[] = trim($input->first()->attr('value'));
+            }
+        );
+
+        return array_combine($headers, $titles);
     }
 
     /**
