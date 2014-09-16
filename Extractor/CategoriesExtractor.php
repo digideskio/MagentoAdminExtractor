@@ -15,7 +15,7 @@ class CategoriesExtractor extends AbstractExtractor
 {
     /**
      * Allows to extract all magento categories from the catalog categories page crawler
-     * Returns [ ['param_1' => 'value', ..., 'children' => idem], [], ...]
+     * Returns ['store view label 1' => ['param_1' => 'value', ..., 'children' => idem], ...]
      * first level is root categories
      *
      * @param Crawler $mainPageCrawler
@@ -31,24 +31,35 @@ class CategoriesExtractor extends AbstractExtractor
         $link = $mainPageCrawler->selectLink($linkName)->link();
         $categoriesPageCrawler = $this->navigationManager->getClient()->click($link);
 
-        $categoriesJsonLink = $link->getUri() . 'categoriesJson/?isAjax=true';
-        $script             = $categoriesPageCrawler
-            ->filter('div.side-col script[type="text/javascript"]')
-            ->eq(1)
-            ->text();
         $formKey = $categoriesPageCrawler->filter('input[name="form_key"]')->first()->attr('value');
 
-        if (preg_match('# data : (\[\{.*\}\])#', $script, $categoriesData)) {
-            $rootCategories = json_decode($categoriesData[1], true);
-        } else {
-            $rootCategories = [];
-        }
+        $categoriesPageCrawler->filter('select#store_switcher optgroup[label~="Store"] option')->each(
+            function($option) use ($link, $categoriesPageCrawler, $formKey, &$categories) {
+                $storeId = $option->attr('value');
+                // used in order to remove &nbsp; before the store view name
+                $storeView = strtr($option->text(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)));
+                $storeView = trim($storeView, chr(0xC2).chr(0xA0));
 
-        foreach ($rootCategories as $key => $rootCategory) {
-            $params = ['id' => $rootCategory['id'], 'form_key' => $formKey];
-            $categories[$key] = $rootCategory;
-            $categories[$key]['children'] = $this->getCategoriesAsArray($categoriesJsonLink, $params);
-        }
+                $categoriesJsonLink = $link->getUri() . 'categoriesJson/?isAjax=true';
+                $script             = $categoriesPageCrawler
+                    ->filter('div.side-col script[type="text/javascript"]')
+                    ->eq(1)
+                    ->text();
+
+                if (preg_match('# data : (\[\{.*\}\])#', $script, $categoriesData)) {
+                    $rootCategories = json_decode($categoriesData[1], true);
+                } else {
+                    $rootCategories = [];
+                }
+
+                foreach ($rootCategories as $key => $rootCategory) {
+                    $params = ['id' => $rootCategory['id'], 'form_key' => $formKey, 'store' => $storeId];
+                    $categories[$storeView][$key] = $rootCategory;
+                    $categories[$storeView][$key]['children'] = $this
+                        ->getCategoriesAsArray($categoriesJsonLink, $params);
+                }
+            }
+        );
         printf('Categories tree extracted' . PHP_EOL);
 
         return $categories;
