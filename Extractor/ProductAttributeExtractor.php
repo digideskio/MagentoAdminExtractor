@@ -14,11 +14,10 @@ use Symfony\Component\DomCrawler\Crawler;
 class ProductAttributeExtractor extends AbstractGridExtractor
 {
     const MAGENTO_ROOT_CATEGORY_ID = 1;
-    const EXTRACTED_ENTITY         = 'product';
 
     /**
      * Allows to extract product attributes
-     * Returns ['nameOfAttribute' => ['value', 'value2', ...], ...]
+     * Returns [['store view label' => ['nameOfAttribute' => ['value', 'value2', ...], ...], ...], ...]
      *
      * @param Crawler $productNodeCrawler Crawler positioned on the product in catalog page
      *                                    ex : $productCatalogCrawler->filter('table#productGrid_table tbody tr')
@@ -28,17 +27,35 @@ class ProductAttributeExtractor extends AbstractGridExtractor
      */
     public function extract(Crawler $productNodeCrawler, $productName = '')
     {
+        $productAttributes = [];
+
         printf(PHP_EOL . 'Accessing to product %s edit page' . PHP_EOL, $productName);
-        $crawler    = $this->navigationManager->goToLink($productNodeCrawler, 'Edit');
-        $attributes = [];
+        $link    = $productNodeCrawler->selectLink('Edit')->link();
+        $crawler = $this->navigationManager->getClient()->click($link);
 
         printf('Processing attributes' . PHP_EOL);
-        $crawler->filter('table.form-list tr')->each(
-            function ($attributeNode) use (&$attributes) {
-                $attributes = array_merge(
-                    $attributes,
-                    $this->getAttributeAsArray($attributeNode)
+        $crawler->filter('select#store_switcher optgroup[label~="Store"] option')->each(
+            function($option) use (&$productAttributes, $link) {
+                $storeId = $option->attr('value');
+
+                // used in order to remove &nbsp; before the store view name
+                $storeView = strtr($option->text(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)));
+                $storeView = trim($storeView, chr(0xC2).chr(0xA0));
+
+                $productLink    = $link->getUri() . 'store/' . $storeId;
+                $productCrawler = $this->navigationManager->goToUri('GET', $productLink);
+
+                $attributes = [];
+                $productCrawler->filter('table.form-list tr')->each(
+                    function ($attributeNode) use (&$attributes) {
+                        $attributes = array_merge(
+                            $attributes,
+                            $this->getAttributeAsArray($attributeNode)
+                        );
+                    }
                 );
+
+                $productAttributes[$storeView] = $attributes;
             }
         );
 
@@ -49,10 +66,16 @@ class ProductAttributeExtractor extends AbstractGridExtractor
         $params['form_key'] = $crawler->filter('input[name="form_key"]')->first()->attr('value');
         $params['category'] = self::MAGENTO_ROOT_CATEGORY_ID;
 
-        $attributes['categories'] = $this->getProductCategoriesAsArray($categoriesJsonLink, $params);
-        printf('%d attributes processed' . PHP_EOL, count($attributes));
+        $productAttributes['categories'] = $this
+            ->getProductCategoriesAsArray($categoriesJsonLink, $params);
 
-        return $attributes;
+        $count = 0;
+        foreach ($productAttributes as $attributes) {
+            $count += count($attributes);
+        }
+        printf('%d attributes processed' . PHP_EOL, $count);
+
+        return $productAttributes;
     }
 
     /**
@@ -89,5 +112,13 @@ class ProductAttributeExtractor extends AbstractGridExtractor
         }
 
         return empty($categories) ? false : $categories;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getExtractedEntity()
+    {
+        return 'product';
     }
 }

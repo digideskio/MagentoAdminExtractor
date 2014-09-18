@@ -12,10 +12,8 @@ use Akeneo\Component\MagentoAdminExtractor\Manager\NavigationManager;
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-abstract class AbstractExtractor
+abstract class AbstractExtractor implements ExtractorInterface
 {
-    const TAG_WARNING = '[WARNING]';
-
     /** @var NavigationManager */
     protected $navigationManager;
 
@@ -30,7 +28,7 @@ abstract class AbstractExtractor
     /**
      * @param Crawler $nodeCrawler
      *
-     * @return mixed
+     * @return array
      */
     abstract public function extract(Crawler $nodeCrawler);
 }

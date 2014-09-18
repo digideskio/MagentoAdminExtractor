@@ -31,10 +31,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
     }
 
     /**
-     * You must implement EXTRACTED_ENTITY const in your child class
-     *
      * Filters rows of a catalog grid and extracts entities one by one
-     * Returns [ ['nameOfAttribute' => ['value', 'value2', ...], ...], ...]
      *
      * @param Crawler $gridCrawler Crawler positioned in the catalog grid of the entity
      *
@@ -46,7 +43,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
     {
         $entities = [];
 
-        $gridCrawler->filter('table#' . static::EXTRACTED_ENTITY . 'Grid_table tbody tr')->each(
+        $gridCrawler->filter('table#' . $this->getExtractedEntity() . 'Grid_table tbody tr')->each(
             function ($entityNode, $i) use (&$entities) {
                 $entities[] = $this->extract(
                     $entityNode,
@@ -57,6 +54,13 @@ abstract class AbstractGridExtractor extends AbstractExtractor
 
         return $entities;
     }
+
+    /**
+     * Gives the current extracted entity name
+     *
+     * @return string
+     */
+    abstract protected function getExtractedEntity();
 
     /**
      * Returns the name of the given attribute
