@@ -28,7 +28,7 @@ abstract class AbstractExtractor implements ExtractorInterface
     /**
      * @param Crawler $nodeCrawler
      *
-     * @return mixed
+     * @return array
      */
     abstract public function extract(Crawler $nodeCrawler);
 }

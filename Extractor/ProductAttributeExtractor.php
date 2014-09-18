@@ -14,7 +14,6 @@ use Symfony\Component\DomCrawler\Crawler;
 class ProductAttributeExtractor extends AbstractGridExtractor
 {
     const MAGENTO_ROOT_CATEGORY_ID = 1;
-    const EXTRACTED_ENTITY         = 'product';
 
     /**
      * Allows to extract product attributes
@@ -89,5 +88,13 @@ class ProductAttributeExtractor extends AbstractGridExtractor
         }
 
         return empty($categories) ? false : $categories;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function getExtractedEntity()
+    {
+        return 'product';
     }
 }
