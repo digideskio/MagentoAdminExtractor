@@ -63,11 +63,18 @@ class ProductAttributeExtractor extends AbstractGridExtractor
         $categoryLink       = $sideMenuCrawler->filter('a#product_info_tabs_categories')->first()->attr('href');
         $categoryLink      .= '?isAjax=true';
         $categoriesJsonLink = preg_replace('/categories/', 'categoriesJson', $categoryLink);
-        $params['form_key'] = $crawler->filter('input[name="form_key"]')->first()->attr('value');
-        $params['category'] = self::MAGENTO_ROOT_CATEGORY_ID;
+        $formKey            = $crawler->filter('input[name="form_key"]')->first()->attr('value');
+        $categoryId         = self::MAGENTO_ROOT_CATEGORY_ID;
 
         $productAttributes['categories'] = $this
-            ->getProductCategoriesAsArray($categoriesJsonLink, $params);
+            ->getProductCategoriesAsArray($categoriesJsonLink, ['form_key' => $formKey, 'category' => $categoryId]);
+
+        if (count($crawler->filter('a#product_info_tabs_configurable')->first()) > 0) {
+            $productAttributes['type'] = 'configurable';
+            $productAttributes['associated'] = $this->getAssociatedProducts($crawler);
+        } else {
+            $productAttributes['type'] = 'simple';
+        }
 
         $count = 0;
         foreach ($productAttributes as $attributes) {
@@ -81,11 +88,12 @@ class ProductAttributeExtractor extends AbstractGridExtractor
     /**
      * Returns categories of Magento product
      * Returns ['categoryName 1', 'categoryName 2', ...]
+     * Recursive method
      *
      * @param string $categoriesJsonLink Link to get categories in json in Magento
      * @param array  $params             ['form_key' => '', 'category' => id]
      *
-     * @return array
+     * @return null|array
      */
     protected function getProductCategoriesAsArray($categoriesJsonLink, $params)
     {
@@ -111,7 +119,53 @@ class ProductAttributeExtractor extends AbstractGridExtractor
             }
         }
 
-        return empty($categories) ? false : $categories;
+        return empty($categories) ? null : $categories;
+    }
+
+    /**
+     * Give associated products if the product is a configurable
+     * Return [['attribute product 1' => 'value', ...], ['attr product 2' => 'value', ...], ...]
+     *
+     * @param Crawler $crawler Crawler on the product page
+     *
+     * @return array
+     */
+    protected function getAssociatedProducts(Crawler $crawler)
+    {
+        $headers = ['checked'];
+        $crawler->filter('table#super_product_links_table tr.headings th')->each(
+            function ($header) use (&$headers) {
+                $text = $header->text();
+                if (!empty($text)) {
+                    $headers[] = $text;
+                }
+            }
+        );
+
+        $associatedProducts = [];
+        $crawler->filter('table#super_product_links_table tr')->each(
+            function ($row, $i) use (&$associatedProducts, $headers) {
+                $row->filter('td')->each(
+                    function ($column, $j) use (&$associatedProducts, $headers, $i) {
+                        $text = trim($column->text());
+                        $html = $column->html();
+
+                        if (empty($text) && $j === 0 && !empty($html)) {
+                            $associatedProducts[$i][$headers[$j]] = $column
+                                ->filter('input[type="checkbox"]')
+                                ->first()
+                                ->attr('checked');
+                        } else {
+                            $associatedProducts[$i][$headers[$j]] = $text;
+                        }
+                    }
+                );
+
+                unset($associatedProducts[$i]['Action']);
+            }
+        );
+
+        return array_values($associatedProducts);
     }
 
     /**
