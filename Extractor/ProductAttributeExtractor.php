@@ -15,6 +15,9 @@ class ProductAttributeExtractor extends AbstractGridExtractor
 {
     const MAGENTO_ROOT_CATEGORY_ID = 1;
 
+    /** @var array */
+    static protected $defaultAssociationProductType = ['related', 'up_sell', 'cross_sell'];
+
     /**
      * Allows to extract product attributes
      * Returns [['store view label' => ['nameOfAttribute' => ['value', 'value2', ...], ...], ...], ...]
@@ -34,8 +37,10 @@ class ProductAttributeExtractor extends AbstractGridExtractor
         $crawler = $this->navigationManager->getClient()->click($link);
 
         printf('Processing attributes' . PHP_EOL);
+
+        // Extracts attributes for each store views
         $crawler->filter('select#store_switcher optgroup[label~="Store"] option')->each(
-            function($option) use (&$productAttributes, $link) {
+            function ($option) use (&$productAttributes, $link) {
                 $storeId = $option->attr('value');
 
                 // used in order to remove &nbsp; before the store view name
@@ -59,8 +64,8 @@ class ProductAttributeExtractor extends AbstractGridExtractor
             }
         );
 
-        $sideMenuCrawler    = $crawler->filter('div.side-col');
-        $categoryLink       = $sideMenuCrawler->filter('a#product_info_tabs_categories')->first()->attr('href');
+        // Extracts categories
+        $categoryLink       = $crawler->filter('div.side-col a#product_info_tabs_categories')->first()->attr('href');
         $categoryLink      .= '?isAjax=true';
         $categoriesJsonLink = preg_replace('/categories/', 'categoriesJson', $categoryLink);
         $formKey            = $crawler->filter('input[name="form_key"]')->first()->attr('value');
@@ -69,18 +74,27 @@ class ProductAttributeExtractor extends AbstractGridExtractor
         $productAttributes['categories'] = $this
             ->getProductCategoriesAsArray($categoriesJsonLink, ['form_key' => $formKey, 'category' => $categoryId]);
 
-        if (count($crawler->filter('a#product_info_tabs_configurable')->first()) > 0) {
+        // Extracts type, and if it's a configurable, extracts associated products
+        if (count($crawler->filter('a#product_info_tabs_configurable')) > 0) {
             $productAttributes['type'] = 'configurable';
-            $productAttributes['associated'] = $this->getAssociatedProducts($crawler);
+            $productAttributes['associated']['configurable'] = $this->getAssociatedConfigurableProducts($crawler);
         } else {
             $productAttributes['type'] = 'simple';
         }
 
-        $count = 0;
-        foreach ($productAttributes as $attributes) {
-            $count += count($attributes);
+        // Extracts X-sells, related or up-sells associated products
+        foreach (static::$defaultAssociationProductType as $type) {
+            $typeLink    = preg_replace('/edit/', str_replace('_', '', $type), $link->getUri());
+            $typeCrawler = $this->navigationManager->goToUri('POST', $typeLink, ['form_key' => $formKey]);
+
+            $associatedProducts = $this->getAssociatedProducts($typeCrawler, $type);
+
+            if (null !== $associatedProducts) {
+                $productAttributes['associated'][$type] = $associatedProducts;
+            }
         }
-        printf('%d attributes processed' . PHP_EOL, $count);
+
+        printf('Product attributes processed' . PHP_EOL);
 
         return $productAttributes;
     }
@@ -130,7 +144,7 @@ class ProductAttributeExtractor extends AbstractGridExtractor
      *
      * @return array
      */
-    protected function getAssociatedProducts(Crawler $crawler)
+    protected function getAssociatedConfigurableProducts(Crawler $crawler)
     {
         $headers = ['checked'];
         $crawler->filter('table#super_product_links_table tr.headings th')->each(
@@ -166,6 +180,54 @@ class ProductAttributeExtractor extends AbstractGridExtractor
         );
 
         return array_values($associatedProducts);
+    }
+
+    /**
+     * Extract associated products from the association tab
+     * Return [['attribute label' => 'value', ...], ...]
+     *
+     * @param Crawler $crawler         Crawler on the product page
+     * @param string  $associationType 'related' or 'up_sell' or 'cross_sell'
+     *
+     * @return null|array
+     */
+    protected function getAssociatedProducts(Crawler $crawler, $associationType)
+    {
+        if (!in_array($associationType, static::$defaultAssociationProductType)) {
+            return null;
+        }
+
+        if (count($crawler->filter(sprintf('table#%s_product_grid_table td.empty-text', $associationType))) === 0) {
+            $associatedProducts = [];
+            $headings = [];
+
+            $crawler->filter(sprintf('table#%s_product_grid_table tr.headings th', $associationType))->each(
+                function ($header, $i) use (&$headings) {
+                    $text = trim($header->text());
+
+                    if (!empty($text)) {
+                        $headings[$i] = $header->text();
+                    }
+                }
+            );
+
+            $crawler->filter(sprintf('table#%s_product_grid_table tr', $associationType))->each(
+                function ($row, $i) use (&$associatedProducts, $headings) {
+
+                    $row->filter('td')->each(
+                        function ($column, $j) use (&$associatedProducts, $headings, $i) {
+                            $text = trim($column->text());
+
+                            if (!empty($text)) {
+                                $associatedProducts[$i][$headings[$j]] = $text;
+                            }
+                        }
+                    );
+                }
+            );
+        }
+
+        return empty($associatedProducts) ? null : $associatedProducts;
     }
 
     /**
