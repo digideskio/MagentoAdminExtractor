@@ -4,7 +4,7 @@ namespace Akeneo\Component\MagentoAdminExtractor\Manager;
 
 /**
  * Log in exception
- * Thrown if your log in or password are wrong during connexion
+ * Thrown if your log in or password are wrong during connection
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
