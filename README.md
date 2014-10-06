@@ -32,17 +32,17 @@ You can have a try and see examples of code with test.php, add print_r() on data
 
 ``` php
 use Akeneo\Component\MagentoAdminExtractor\Manager\LogInException;
-use Akeneo\Component\MagentoAdminExtractor\Manager\MagentoAdminConnexionManager;
+use Akeneo\Component\MagentoAdminExtractor\Manager\MagentoAdminConnectionManager;
 
-$connexionManager = new MagentoAdminConnexionManager(
+$connectionManager = new MagentoAdminConnectionManager(
     MAGENTO_ADMIN_URL,
     MAGENTO_ADMIN_LOGIN,
     MAGENTO_ADMIN_PWD
 );
 
 try {
-    $mainPageCrawler = $connexionManager->connectToAdminPage();
-    $client          = $connexionManager->getClient();
+    $mainPageCrawler = $connectionManager->connectToAdminPage();
+    $client          = $connectionManager->getClient();
 } catch (LogInException $e) {
     die($e->getMessage() . PHP_EOL);
 }
@@ -55,7 +55,7 @@ Second argument of ->goToXXXCatalog() is a numeric and allows you specify the nu
 ``` php
 use Akeneo\Component\MagentoAdminExtractor\Manager\NavigationManager;
 
-$client            = $connexionManager->getClient();
+$client            = $connectionManager->getClient();
 $navigationManager = new NavigationManager($client);
 
 $productCatalogCrawler   = $navigationManager->goToProductCatalog($mainPageCrawler, 50);
