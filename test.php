@@ -8,22 +8,22 @@ use Akeneo\Component\MagentoAdminExtractor\Extractor\ProductAttributeExtractor;
 use Akeneo\Component\MagentoAdminExtractor\Extractor\AttributeExtractor;
 use Akeneo\Component\MagentoAdminExtractor\Extractor\CategoriesExtractor;
 use Akeneo\Component\MagentoAdminExtractor\Manager\LogInException;
-use Akeneo\Component\MagentoAdminExtractor\Manager\MagentoAdminConnexionManager;
+use Akeneo\Component\MagentoAdminExtractor\Manager\MagentoAdminConnectionManager;
 use Akeneo\Component\MagentoAdminExtractor\Manager\NavigationManager;
 
 const MAGENTO_ADMIN_URL   = 'http://magento.local/index.php/admin';
-const MAGENTO_ADMIN_LOGIN = 'some_login';
-const MAGENTO_ADMIN_PWD   = 'some_pwd';
+const MAGENTO_ADMIN_LOGIN = 'root';
+const MAGENTO_ADMIN_PWD   = 'akeneo2014';
 
-$connexionManager = new MagentoAdminConnexionManager(
+$connectionManager = new MagentoAdminConnectionManager(
     MAGENTO_ADMIN_URL,
     MAGENTO_ADMIN_LOGIN,
     MAGENTO_ADMIN_PWD
 );
 
 try {
-    $mainPageCrawler = $connexionManager->connectToAdminPage();
-    $client          = $connexionManager->getClient();
+    $mainPageCrawler = $connectionManager->connectToAdminPage();
+    $client          = $connectionManager->getClient();
 } catch (LogInException $e) {
     die($e->getMessage() . PHP_EOL);
 }
