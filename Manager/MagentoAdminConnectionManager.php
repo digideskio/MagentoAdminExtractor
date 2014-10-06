@@ -5,13 +5,13 @@ namespace Akeneo\Component\MagentoAdminExtractor\Manager;
 use Goutte\Client;
 
 /**
- * Manage connexion to magento admin dashboard
+ * Manage connection to magento admin dashboard
  *
  * @author    Willy Mesnage <willy.mesnage@akeneo.com>
  * @copyright 2014 Akeneo SAS (http://www.akeneo.com)
  * @license   http://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
-class MagentoAdminConnexionManager
+class MagentoAdminConnectionManager
 {
     /** @var string */
     protected $adminUrl;
@@ -42,7 +42,7 @@ class MagentoAdminConnexionManager
      *
      * @return Crawler Admin page crawler
      *
-     * @throws LogInException if there is a problem with connexion
+     * @throws LogInException if there is a problem with connection
      */
     public function connectToAdminPage()
     {
@@ -71,7 +71,7 @@ class MagentoAdminConnexionManager
     /**
      * @return Client
      *
-     * @throws LogInException if there is a problem with connexion
+     * @throws LogInException if there is a problem with connection
      */
     public function getClient()
     {
