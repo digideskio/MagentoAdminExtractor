@@ -46,7 +46,7 @@ class NavigationManager
                 $link    = $crawler->selectLink($linkName)->link();
                 $crawler = $this->client->click($link);
             } catch (\InvalidArgumentException $e) {
-                throw new NavigationException('[ERROR] ' . $e->getMessage() . '. A problem can be that the' .
+                throw new NavigationException('[ERROR] ' . $e->getMessage() . ' A problem can be that the' .
                     ' given link "' . $linkName .'" can not be found.');
             }
         } else {

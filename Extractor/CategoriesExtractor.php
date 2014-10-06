@@ -34,7 +34,7 @@ class CategoriesExtractor extends AbstractExtractor
         $formKey = $categoriesPageCrawler->filter('input[name="form_key"]')->first()->attr('value');
 
         $categoriesPageCrawler->filter('select#store_switcher optgroup[label~="Store"] option')->each(
-            function($option) use ($link, $categoriesPageCrawler, $formKey, &$categories) {
+            function ($option) use ($link, $categoriesPageCrawler, $formKey, &$categories) {
                 $storeId = $option->attr('value');
                 // used in order to remove &nbsp; before the store view name
                 $storeView = strtr($option->text(), array_flip(get_html_translation_table(HTML_ENTITIES, ENT_QUOTES)));
