@@ -1,3 +1,7 @@
+# 1.0.0-BETA-2
+## Bug Fixes
+- Fix bug with product attributes extraction
+
 # 1.0.0-BETA-1
 ## Features
 - Allows to connect to Magento Admin
