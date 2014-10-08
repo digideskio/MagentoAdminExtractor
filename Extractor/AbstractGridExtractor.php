@@ -95,7 +95,7 @@ abstract class AbstractGridExtractor extends AbstractExtractor
      */
     protected function getAttributeValues(Crawler $attributeNode)
     {
-        if (count($attributeNode->filter('td.value input')) > 0) {
+        if (count($attributeNode->filter('td.value input:not([name="use_default[]"])')) > 0) {
             $type = $attributeNode->filter('td.value input')->first()->attr('type');
 
             switch ($type) {
