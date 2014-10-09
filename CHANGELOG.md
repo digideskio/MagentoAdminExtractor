@@ -1,3 +1,7 @@
+# 1.0.0-BETA-3
+## Improvements
+ - Add attribute sets during products extraction
+
 # 1.0.0-BETA-2
 ## Bug Fixes
 - Fix bug with product attributes extraction
