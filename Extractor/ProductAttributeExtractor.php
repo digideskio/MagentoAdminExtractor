@@ -64,6 +64,15 @@ class ProductAttributeExtractor extends AbstractGridExtractor
             }
         );
 
+        // Extracts attribute set
+        $tmpAttrSetName = $crawler->filter('h3.head-products')->first()->text();
+        if (preg_match('#(.*) \((.*)\)#', $tmpAttrSetName, $matches)) {
+            $attrSetName = $matches[2];
+            $productAttributes['set_name'] = $attrSetName;
+        } else {
+            $productAttributes['set_name'] = $tmpAttrSetName;
+        }
+
         // Extracts categories
         $categoryLink       = $crawler->filter('div.side-col a#product_info_tabs_categories')->first()->attr('href');
         $categoryLink      .= '?isAjax=true';
