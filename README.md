@@ -23,6 +23,11 @@ And then create a symlink in your project with ``ln -s path_to_MagentoAdminExtra
 
 ## How to use the extractor ?
 
+### Prerequisite
+
+Remove the secret keys to url to be able to extract data.
+System -> Configuration -> Advanced -> Admin -> Security -> Add secret key to urls : NO
+
 ### Try to extract
 
 You can have a try and see examples of code with test.php, add print_r() on data you want to see in terminal and
