@@ -1,6 +1,6 @@
 {
-    "name": "akeneo/MagentoAdminExtractor",
-    "description": "Allows to extract data from Magento crawling the back-end",
+    "name": "akeneo/magento-admin-extractor",
+    "description": "Allows to extract data from Magento crawling the back-end for testing purpose",
     "license": "OSL-3.0",
     "keywords": ["akeneo", "ecommerce", "e-commerce", "magento", "extractor", "data"],
     "homepage": "http://www.akeneo.com",

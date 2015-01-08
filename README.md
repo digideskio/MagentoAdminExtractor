@@ -4,6 +4,8 @@ AKENEO Component : MagentoAdminExtractor
 ## What MagentoAdminExtractor is about ?
 
 The component use Goutte to connect to the Magento back-end and extracts data which are human-visible.
+Its main purpose is to be included in the Magento Connector Bundle (https://github.com/akeneo/MagentoConnectorBundle)
+test suite in order to check that data sent to Magento are well received.
 
 ## What can I do with MagentoAdminExtractor ?
 
