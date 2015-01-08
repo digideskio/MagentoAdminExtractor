@@ -20,5 +20,5 @@
             "Akeneo\\Component\\MagentoAdminExtractor\\": ""
         }
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "stable"
 }
